@@ -1,0 +1,76 @@
+<script>
+    function searchButton() {
+        var searchType = document.getElementById("searchType").value;
+        var searchKeyword = document.getElementById("searchKeyword").value;
+        if(searchKeyword == "") {
+            return false;
+        }
+        else {
+            self.location.href = "{{url_for('board_list')}}?searchType=" + searchType + "&searchKeyword=" + searchKeyword;
+        }
+    }
+
+    function searchEnter(ele) {
+        if (event.key === 'Enter') {
+            searchButton();
+        }
+    }
+</script>
+
+{% if dataCount > 0 %}
+<table>
+    <thead>
+        <tr>
+            <td>Num</td>
+            <td>Title</td>
+            <td>Name</td>
+            <td>Date</td>
+            <td>Count</td>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- repeat list -->
+        {% for curr in data %}
+        <tr>
+            <td>{{loop.index+(pagePos -1) * pageLimit}}</td>
+            <td><a href="{{url_for('board_view',idx=curr._id, pagePos=pagePos, searchType=searchType, searchKeyword=searchKeyword)}}">{{curr.title}}</a></td>
+            <td>{{curr.name}}</td>
+            <td>{{curr.date|formatdatetime}}</td>
+            <td>{{curr.view}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% if blockStartPos -1 > 0 %}
+    <a href="{{url_for('board_list', pagePos=blockStartPos-1, searchType=searchType, searchKeyword=searchKeyword)}}">prev</a>
+{% endif %}
+
+{% for i in range(blockStartPos, blockLastPos + 1) %}
+    {% if i <= lastPage %}
+        {% if i== pagePos %}
+            <b> {{ i }}</b>
+        {% else %}
+            <a href="{{url_for('board_list', pagePos=i, searchType=searchType, searchKeyword=searchKeyword)}}">{{i}}</a>
+        {% endif %}
+    {% endif %}
+{% endfor %}
+
+{% if blockLastPos < lastPage %}
+    <a href="{{url_for('board_list', pagePos=blockLastPos+1, searchType=searchType, searchKeyword=searchKeyword)}}">next</a>
+{% endif %}
+
+<select name="searchType" id="searchType">
+    <option value="0" {% if searchType == 0 %} selected {% endif %}>All</option>
+    <option value="1" {% if searchType == 1 %} selected {% endif %}>Title</option>
+    <option value="2" {% if searchType == 2 %} selected {% endif %}>Contents</option>
+    <option value="3" {% if searchType == 3 %} selected {% endif %}>Title + Contents</option>
+    <option value="4" {% if searchType == 4 %} selected {% endif %}>Writer</option>
+</select>
+<input type="text" name="searchKeyword" id="searchKeyword" onkeydown="searchEnter(this)" {% if searchKeyword != "" %} value={{searchKeyword}} {% endif %}>
+<input type="button" value="Search" onclick="searchButton()">
+{% else %}
+<h3> No data </h3>
+{% endif %}
+
+<a href="{{url_for('board_write')}}">Write</a>
+<a href="{{url_for('board_list')}}">List</a>

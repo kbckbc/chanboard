@@ -1,0 +1,38 @@
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            alert("{{messages[-1]}}");
+        </script>
+
+    {% endif %}
+{% endwith %}
+
+<table>
+    <form name="form" action="/join" method="POST">
+        <thead>
+            <caption>Join</caption>
+        </thead>
+        <tbody>
+            <tr>
+                <td>email</td>
+                <td><input type="text" name="email"></td>
+            </tr>
+            <tr>
+                <td>Name</td>
+                <td><input type="text" name="name"></td>
+            </tr>
+            <tr>
+                <td>pass</td>
+                <td><input type="password" name="password1"></td>
+            </tr>
+            <tr>
+                <td>pass confirm</td>
+                <td><input type="password" name="password2"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" value="Join"></td>
+            </tr>
+        </tbody>
+
+    </form>
+</table>

@@ -1,0 +1,26 @@
+<html>
+<!-- 
+    Double brackets is a syntax from Jinja Template Engine in flask 
+    Double bracket : When print out variable value
+    One bracket with % : if statement etc..
+-->
+
+<!-- 
+    result variable is from run.py's board_view() function 
+-->
+{{result._id}}
+<br>
+{{result.name}}
+<br>
+{{result.title}}
+<br>
+{{result.contents}}
+<br>
+{{result.date|formatdatetime}}
+<br>
+{{result.view}}
+<br>
+
+<a href="{{url_for('board_list', pagePos=pagePos, searchType=searchType, searchKeyword=searchKeyword)}}">List</a>
+
+</html>

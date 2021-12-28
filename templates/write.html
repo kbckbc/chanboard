@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+
+<body>
+    
+<form name="form" method="POST" action="/write">
+    <div>Writer
+        <input type="text" name="name"></input>
+    </div>
+    <div>Title
+        <input type="text" name="title"></input>
+    </div>
+    <div>Contents
+        <textarea name="contents"></textarea>
+    </div>
+    <div>
+        <input type="submit">
+        <a href="{{url_for('board_list')}}">List</a>
+    </div>
+</form>
+
+
+</body>
+</html>
