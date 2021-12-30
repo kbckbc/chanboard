@@ -1,0 +1,32 @@
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            alert("{{messages[-1]}}");
+        </script>
+
+    {% endif %}
+{% endwith %}
+
+<table>
+    <form name="form" action="/login" method="POST">
+    {% if next_url %}
+        <input type="hidden" name="next_url" value="{{next_url}}">
+    {% endif %}
+        <thead>
+            <caption>Login</caption>            
+        </thead>
+        <tbody>
+            <tr>
+                <td>email</td>
+                <td><input type="text" name="email"></td>
+            </tr>
+            <tr>
+                <td>password</td>
+                <td><input type="password" name="password"></td>
+            </tr>
+            <tr>
+                <td colspan="2"><input type="submit" value="login"></td>
+            </tr>
+        </tbody>
+    </form>
+</table>

@@ -1,0 +1,24 @@
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            alert("{{messages[-1]}}");
+        </script>
+
+    {% endif %}
+{% endwith %}
+
+<form name="form" method="POST" action="/edit/{{data._id}}">
+    <div>Writer
+        <input type="text" name="name" value="{{session['name']}}" readonly></input>
+    </div>
+    <div>Title
+        <input type="text" name="title" value="{{data.title}}"></input>
+    </div>
+    <div>Contents
+        <textarea name="contents">{{data.contents}}</textarea>
+    </div>
+    <div>
+        <input type="submit">
+        <a href="{{url_for('board_list')}}">List</a>
+    </div>
+</form>

@@ -1,3 +1,12 @@
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            alert("{{messages[-1]}}");
+        </script>
+
+    {% endif %}
+{% endwith %}
+
 <script>
     function searchButton() {
         var searchType = document.getElementById("searchType").value;
@@ -16,6 +25,10 @@
         }
     }
 </script>
+
+{{ session["name"] }}
+{{ session["email"] }}
+{{ session["id"] }}
 
 {% if dataCount > 0 %}
 <table>

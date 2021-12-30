@@ -12,15 +12,20 @@
 <br>
 {{result.name}}
 <br>
-{{result.title}}
+title: {{result.title}}
 <br>
-{{result.contents}}
+contents: {{result.contents}}
 <br>
-{{result.date|formatdatetime}}
+date: {{result.date|formatdatetime}}
 <br>
-{{result.view}}
+view count: {{result.view}}
 <br>
 
 <a href="{{url_for('board_list', pagePos=pagePos, searchType=searchType, searchKeyword=searchKeyword)}}">List</a>
+
+{% if session["id"] == result.writer_id %}
+<a href="{{url_for('board_edit', idx=result._id)}}">Edit</a>
+<a href="{{url_for('board_delete', idx=result._id)}}">Delete</a>
+{% endif %}
 
 </html>
