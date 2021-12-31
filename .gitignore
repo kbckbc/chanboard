@@ -1,3 +1,4 @@
 /.vscode
 /ggcrawling.py
 /venv
+/main/__pycache__/*.pyc
