@@ -1,12 +1,5 @@
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <script>
-            alert("{{messages[-1]}}");
-        </script>
-
-    {% endif %}
-{% endwith %}
-
+{% extends "main.html" %}
+{% block content %}
 <script>
     function searchButton() {
         var searchType = document.getElementById("searchType").value;
@@ -31,7 +24,7 @@
 {{ session["id"] }}
 
 {% if dataCount > 0 %}
-<table>
+<table class="table">
     <thead>
         <tr>
             <td>Num</td>
@@ -54,36 +47,45 @@
         {% endfor %}
     </tbody>
 </table>
-{% if blockStartPos -1 > 0 %}
-    <a href="{{url_for('board_list', pagePos=blockStartPos-1, searchType=searchType, searchKeyword=searchKeyword)}}">prev</a>
-{% endif %}
 
-{% for i in range(blockStartPos, blockLastPos + 1) %}
-    {% if i <= lastPage %}
-        {% if i== pagePos %}
-            <b> {{ i }}</b>
-        {% else %}
-            <a href="{{url_for('board_list', pagePos=i, searchType=searchType, searchKeyword=searchKeyword)}}">{{i}}</a>
+<div class="text-center">
+    <ul class="pagination">
+        {% if blockStartPos -1 > 0 %}
+            <li class="page-item"><a class="page-link" href="{{url_for('board_list', pagePos=blockStartPos-1, searchType=searchType, searchKeyword=searchKeyword)}}">prev</a></li>
         {% endif %}
+        
+        {% for i in range(blockStartPos, blockLastPos + 1) %}
+            {% if i <= lastPage %}
+                {% if i== pagePos %}
+                    <li class="page-item"><a class="page-link active text-warning">{{ i }}</a></li>
+                {% else %}
+                    <li class="page-item"><a class="page-link" href="{{url_for('board_list', pagePos=i, searchType=searchType, searchKeyword=searchKeyword)}}">{{i}}</a></li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        
+        {% if blockLastPos < lastPage %}
+            <li class="page-item"><a class="page-link" href="{{url_for('board_list', pagePos=blockLastPos+1, searchType=searchType, searchKeyword=searchKeyword)}}">next</a></li>
+        {% endif %}
+    </ul>
+
+</div>
+
+<div class="text-center">
+    <select name="searchType" id="searchType">
+        <option value="0" {% if searchType == 0 %} selected {% endif %}>All</option>
+        <option value="1" {% if searchType == 1 %} selected {% endif %}>Title</option>
+        <option value="2" {% if searchType == 2 %} selected {% endif %}>Contents</option>
+        <option value="3" {% if searchType == 3 %} selected {% endif %}>Title + Contents</option>
+        <option value="4" {% if searchType == 4 %} selected {% endif %}>Writer</option>
+    </select>
+    <input type="text" name="searchKeyword" id="searchKeyword" onkeydown="searchEnter(this)" {% if searchKeyword != "" %} value={{searchKeyword}} {% endif %}>
+    <input type="button" value="Search" onclick="searchButton()" class="btn btn-primary">
+    {% else %}
+    <h3> No data </h3>
     {% endif %}
-{% endfor %}
-
-{% if blockLastPos < lastPage %}
-    <a href="{{url_for('board_list', pagePos=blockLastPos+1, searchType=searchType, searchKeyword=searchKeyword)}}">next</a>
-{% endif %}
-
-<select name="searchType" id="searchType">
-    <option value="0" {% if searchType == 0 %} selected {% endif %}>All</option>
-    <option value="1" {% if searchType == 1 %} selected {% endif %}>Title</option>
-    <option value="2" {% if searchType == 2 %} selected {% endif %}>Contents</option>
-    <option value="3" {% if searchType == 3 %} selected {% endif %}>Title + Contents</option>
-    <option value="4" {% if searchType == 4 %} selected {% endif %}>Writer</option>
-</select>
-<input type="text" name="searchKeyword" id="searchKeyword" onkeydown="searchEnter(this)" {% if searchKeyword != "" %} value={{searchKeyword}} {% endif %}>
-<input type="button" value="Search" onclick="searchButton()">
-{% else %}
-<h3> No data </h3>
-{% endif %}
-
-<a href="{{url_for('board_write')}}">Write</a>
-<a href="{{url_for('board_list')}}">List</a>
+    
+    <a href="{{url_for('board_list')}}" class="btn btn-success">Init search</a>
+    <a href="{{url_for('board_write')}}" class="btn btn-primary">Write</a>
+</div>
+{% endblock %}

@@ -1,32 +1,43 @@
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <script>
-            alert("{{messages[-1]}}");
-        </script>
+{% extends "main.html" %}
+{% block content %}
+<script>
+    function checkForm() {
+        if($.trim($("#email").val()) == "") {
+            alert("Write down your email");
+            $('#email').focus();
+            return false;
+        }
 
-    {% endif %}
-{% endwith %}
+        if(!validateEmail($.trim($("#email").val()))) {
+            alert("Email pattern is not correct");
+            $('#email').focus();
+            return false;
+        }
 
-<table>
-    <form name="form" action="/login" method="POST">
-    {% if next_url %}
-        <input type="hidden" name="next_url" value="{{next_url}}">
-    {% endif %}
-        <thead>
-            <caption>Login</caption>            
-        </thead>
-        <tbody>
-            <tr>
-                <td>email</td>
-                <td><input type="text" name="email"></td>
-            </tr>
-            <tr>
-                <td>password</td>
-                <td><input type="password" name="password"></td>
-            </tr>
-            <tr>
-                <td colspan="2"><input type="submit" value="login"></td>
-            </tr>
-        </tbody>
-    </form>
-</table>
+        if($.trim($("#password").val()) == "") {
+            alert("Write down your password");
+            $('#password').focus();
+            return false;
+        }
+
+        return true;        
+    }
+</script>
+
+<form name="form" action="/login" method="POST" onsubmit="return checkForm()">
+{% if next_url %}
+    <input type="hidden" name="next_url" value="{{next_url}}">
+{% endif %}
+    <div class="form-group">
+        <label for="email">E-mail</label>
+        <input class="form-control" type="text" name="email" id="email">
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input class="form-control" type="password" name="password" id="password">
+    </div>
+    <div class="text-center">
+        <input class="btn btn-primary" type="submit" value="Login">
+    </div>
+</form>
+{% endblock %}

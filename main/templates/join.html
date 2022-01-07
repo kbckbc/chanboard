@@ -1,38 +1,66 @@
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <script>
-            alert("{{messages[-1]}}");
-        </script>
+{% extends "main.html" %}
+{% block content %}
+<script>
+    function checkForm() {
+        if($.trim($("#email").val()) == "") {
+            alert("Write down your email");
+            $('#email').focus();
+            return false;
+        }
 
-    {% endif %}
-{% endwith %}
+        if(!validateEmail($.trim($("#email").val()))) {
+            alert("Email pattern is not correct");
+            $('#email').focus();
+            return false;
+        }
 
-<table>
-    <form name="form" action="/join" method="POST">
-        <thead>
-            <caption>Join</caption>
-        </thead>
-        <tbody>
-            <tr>
-                <td>email</td>
-                <td><input type="text" name="email"></td>
-            </tr>
-            <tr>
-                <td>Name</td>
-                <td><input type="text" name="name"></td>
-            </tr>
-            <tr>
-                <td>pass</td>
-                <td><input type="password" name="password1"></td>
-            </tr>
-            <tr>
-                <td>pass confirm</td>
-                <td><input type="password" name="password2"></td>
-            </tr>
-            <tr>
-                <td colspan="2"><input type="submit" value="Join"></td>
-            </tr>
-        </tbody>
+        if($.trim($("#name").val()) == "") {
+            alert("Write down your name");
+            $('#name').focus();
+            return false;
+        }
 
-    </form>
-</table>
+        if($("#password1").val() == "") {
+            alert("Write down your password");
+            $('#password1').focus();
+            return false;
+        }
+
+        if($("#password2").val() == "") {
+            alert("Write down your password");
+            $('#password2').focus();
+            return false;
+        }
+
+        if($("#password1").val() != $("#password2").val()) {
+            alert("Password doesn't match");
+            $('#password2').focus();            
+            return false;
+        }
+
+        return true;        
+    }
+</script>
+<form name="form" action="/join" method="POST" onsubmit="return checkForm()" >
+    <div class="form-group">
+        <label>E-mail</label>
+        <input class="form-control" type="text" name="email" id="email">
+    </div>
+    <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" type="text" name="name" id="name">
+    </div>
+    <div class="form-group">
+        <label>Password</label>
+        <input class="form-control" type="text" name="password1" id="password1">
+    </div>
+    <div class="form-group">
+        <label>Password confirm</label>
+        <input class="form-control" type="text" name="password2" id="password2">
+    </div>
+    <div class="text-center">
+        <input class="btn btn-primary" type="submit" value="Join">
+    </div>
+
+</form>
+{% endblock %}

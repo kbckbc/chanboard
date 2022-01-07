@@ -1,4 +1,5 @@
-<html>
+{% extends "main.html" %}
+{% block content %}
 <!-- 
     Double brackets is a syntax from Jinja Template Engine in flask 
     Double bracket : When print out variable value
@@ -8,24 +9,27 @@
 <!-- 
     result variable is from run.py's board_view() function 
 -->
-{{result._id}}
-<br>
-{{result.name}}
-<br>
-title: {{result.title}}
-<br>
-contents: {{result.contents}}
-<br>
-date: {{result.date|formatdatetime}}
-<br>
-view count: {{result.view}}
-<br>
+<table class="table table-bordered">
+    <tbody>
+        <tr>
+            <td>{{result.title}}</td>
+            <td class="text-right">{{result.view}}</td>
+        </tr>
+        <tr>
+            <td>{{result.name}}</td>
+            <td class="text-right">{{result.date|formatdatetime}}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><div style="min-height: 200px;">{% autoescape false %}{{result.contents}}{% endautoescape %}</div></td>
+        </tr>
 
-<a href="{{url_for('board_list', pagePos=pagePos, searchType=searchType, searchKeyword=searchKeyword)}}">List</a>
+    </tbody>
+
+</table>
 
 {% if session["id"] == result.writer_id %}
-<a href="{{url_for('board_edit', idx=result._id)}}">Edit</a>
-<a href="{{url_for('board_delete', idx=result._id)}}">Delete</a>
+<a class="btn btn-primary float-right" href="{{url_for('board_edit', idx=result._id)}}">Edit</a>
+<a class="btn btn-danger float-right" href="{{url_for('board_delete', idx=result._id)}}">Delete</a>
 {% endif %}
-
-</html>
+<a class="btn btn-success" href="{{url_for('board_list', pagePos=pagePos, searchType=searchType, searchKeyword=searchKeyword)}}">Back to list</a>
+{% endblock %}

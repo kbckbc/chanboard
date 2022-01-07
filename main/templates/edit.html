@@ -1,24 +1,22 @@
-{% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <script>
-            alert("{{messages[-1]}}");
-        </script>
-
-    {% endif %}
-{% endwith %}
-
+{% extends "main.html" %}
+{% block content %}
 <form name="form" method="POST" action="/edit/{{data._id}}">
-    <div>Writer
-        <input type="text" name="name" value="{{session['name']}}" readonly></input>
+    <div class="form-group">
+        <label>Writer</label>
+        <input class="form-control" type="text" name="name" value="{{session['name']}}" readonly></input>
     </div>
-    <div>Title
-        <input type="text" name="title" value="{{data.title}}"></input>
+    <div class="form-group">
+        <label>Title</label>
+        <input class="form-control" type="text" name="title" value="{{data.title}}"></input>
     </div>
-    <div>Contents
-        <textarea name="contents">{{data.contents}}</textarea>
+    <div class="form-group">
+        <label>Contents</label>
+        <textarea class="form-control" rows="8" name="contents">{{data.contents}}</textarea>
+    
     </div>
     <div>
-        <input type="submit">
-        <a href="{{url_for('board_list')}}">List</a>
+        <input class="btn btn-primary" type="submit" value="Edit">
+        <a class="btn btn-success" href="{{url_for('board_list')}}">Back to list</a>
     </div>
 </form>
+{% endblock %}

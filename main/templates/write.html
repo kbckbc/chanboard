@@ -1,15 +1,52 @@
-<form name="form" method="POST" action="/write">
-    <div>Writer
-        <input type="text" name="name"></input>
+{% extends "main.html" %}
+{% block content %}
+<script>
+    $(document).ready(function() {
+        $("#summernote").summernote({
+            height:300,
+        });
+
+    })
+
+    function checkForm() {
+        if($.trim($("#name").val()) == "") {
+            alert("Write down your name");
+            $('#name').focus();
+            return false;
+        }
+
+        if($("#title").val() == "") {
+            alert("Write down a title");
+            $('#title').focus();
+            return false;
+        }
+
+        if($("#summernote").val() == "") {
+            alert("Write down a contents");
+            $('#contents').focus();
+            return false;
+        }
+
+        return true;        
+    }
+</script>
+<form name="form" method="POST" action="/write" onsubmit="return checkForm()">
+    <div class="form-group">
+        <label for="name">Writer</label>
+        <input class="form-control" type="text" name="name" id="name" value="{{session['name']}}" readonly>
     </div>
-    <div>Title
-        <input type="text" name="title"></input>
+    <div class="form-group">
+        <label for="name">Title</label>
+        <input class="form-control" type="text" name="title" id="title">
     </div>
-    <div>Contents
-        <textarea name="contents"></textarea>
+    <div class="form-group">
+        <label for="name">Contents</label>
+        <textarea class="form-control" name="contents" id="summernote"></textarea>
     </div>
-    <div>
-        <input type="submit">
-        <a href="{{url_for('board_list')}}">List</a>
+    <div class="text-center">
+        <input class="btn btn-primary" type="submit" value="Post">
+        <a class="btn btn-success" href="{{url_for('board_list')}}">Back to List</a>
     </div>
 </form>
+
+{% endblock %}

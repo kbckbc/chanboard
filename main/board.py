@@ -60,7 +60,8 @@ def board_list():
         lastPage=lastPage,
         pageLimit=pageLimit,
         searchType=searchType,
-        searchKeyword=searchKeyword
+        searchKeyword=searchKeyword,
+        title="Board list"
         )
 
 
@@ -107,7 +108,7 @@ def board_view(idx):
 
             # render_template is from flask
             # It will find a file in the templates folder
-            return render_template("view.html", result=result, searchType=searchType, searchKeyword=searchKeyword, pagePos=pagePos)
+            return render_template("view.html", result=result, searchType=searchType, searchKeyword=searchKeyword, pagePos=pagePos, title="View a post detail")
     # abort func is from flask
     return abort(400)
 
@@ -136,7 +137,7 @@ def board_write():
     else:
         # render_template is from flask
         # It will find a file in the templates folder
-        return render_template("write.html")
+        return render_template("write.html",title="Write a post")
 
 @app.route("/edit/<idx>", methods=["GET", "POST"])
 def board_edit(idx):
@@ -148,7 +149,7 @@ def board_edit(idx):
     else:
         if session.get("id") == data.get("writer_id"):
             if request.method == "GET":
-                return render_template("edit.html", data=data)
+                return render_template("edit.html", data=data, title="Edit a post")
             else:
                 title = request.form.get("title")
                 contents = request.form.get("contents")

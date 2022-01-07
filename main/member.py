@@ -10,11 +10,11 @@ def member_join():
 
         if name == "" or email == "" or password1 == "" or password2 == "":
             flash("Check input again.")
-            return render_template("join.html")
+            return render_template("join.html", title="Sign up for a member")
 
         if password1 != password2:
             flash("Password don't match. Try again.")
-            return render_template("join.html")
+            return render_template("join.html", title="Sign up for a member")
 
         members = mongo.db.members
         currTime = round(datetime.utcnow().timestamp() * 1000)
@@ -22,7 +22,7 @@ def member_join():
         cnt = len(list(members.find({"email": email})))
         if cnt > 0:
             flash("Input email already exists! Use different email address.")
-            return render_template("join.html")
+            return render_template("join.html", title="Sign up for a member")
         
         post = {
             "name": name,
@@ -37,7 +37,7 @@ def member_join():
 
         return ""
     else:
-        return render_template("join.html")
+        return render_template("join.html", title="Sign up for a member")
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -73,4 +73,12 @@ def member_login():
                 return redirect(url_for("member_login"))
     else:
         next_url = request.args.get("next_url", type=str)
-        return render_template("login.html", next_url=next_url)
+        return render_template("login.html", next_url=next_url, title="Log in")
+
+
+@app.route("/logout")
+def member_logout():
+    del session["name"]
+    del session["id"]
+    del session["email"]
+    return redirect(url_for('member_login'))
