@@ -4,9 +4,39 @@
     $(document).ready(function() {
         $("#summernote").summernote({
             height:300,
+            minHeight: null, 
+            maxHeight: null,
+            callbacks: {
+                onImageUpload: function(image){
+                    for(var i=0; i<image.length; i++) {
+                        uploadImage(image[i]);
+                    }
+                }
+            }
         });
 
     })
+
+    function uploadImage(image) {
+        var data = new FormData();
+        data.append("image", image);
+        $.ajax({
+            url: "{{url_for('board_upload_image')}}",
+            cache: false,
+            contentType: false, <!-- when file transfer, set to false -->
+            processData: false, <!-- when not using query string method on url, set to false-->
+            data: data,
+            type: "post",
+            success: function(url) {
+                var image = $("<img>").attr("src", url).css('max-width', "900px");
+                $("#summernote").summernote("insertNode", image[0]);
+            },
+            error: function(data) {
+                console.log(data);
+                alert(data);
+            }
+        })
+    }
 
     function checkForm() {
         if($.trim($("#name").val()) == "") {
@@ -23,7 +53,7 @@
 
         if($("#summernote").val() == "") {
             alert("Write down a contents");
-            $('#contents').focus();
+            $('#summernote').focus();
             return false;
         }
 

@@ -1,4 +1,21 @@
 from main import *
+from flask import send_from_directory
+
+
+@app.route("/upload_image", methods=["POST"])
+def board_upload_image():
+    if request.method == "POST":
+        file = request.files["image"]
+        if file and allowed_file(file.filename):
+            filename = "{}.jpg".format(rand_generator())
+            savefilepath = os.path.join(app.config["BOARD_IMAGE_PATH"], filename)
+            file.save(savefilepath)
+            return url_for("board_image", filename=filename)
+
+
+@app.route("/image/<filename>")
+def board_image(filename):
+    return send_from_directory(app.config["BOARD_IMAGE_PATH"], filename)
 
 
 @app.route("/list")

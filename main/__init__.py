@@ -11,6 +11,7 @@ from flask import url_for
 from flask import flash
 import time
 import math
+import os
 
 from flask import session
 from datetime import timedelta
@@ -22,10 +23,18 @@ app = Flask(__name__)
 # to set the session timeout
 app.config["MONGO_URI"] = "mongodb://localhost:27017/chanboard"
 app.config["SECRET_KEY"] = "abcdefg"
-app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=1)
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=2)
 mongo = PyMongo(app)
 
-from main.common import login_required
+BOARD_IMAGE_PATH = "d:\kbckbc\images"
+ALLOWED_EXTENSIONS = set(["txt", "pdf", "png", "jpg", "jpeg", "gif"])
+app.config["BOARD_IMAGE_PATH"] = BOARD_IMAGE_PATH
+app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024 # up to 15 MB
+
+if not os.path.exists(app.config["BOARD_IMAGE_PATH"]):
+    os.mkdir(app.config["BOARD_IMAGE_PATH"])
+
+from main.common import login_required, allowed_file, rand_generator
 from main.filter import format_datetime
 from main import board
 from main import member
