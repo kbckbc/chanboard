@@ -1,6 +1,13 @@
+from werkzeug.utils import secure_filename
 from main import *
 from flask import send_from_directory
 
+def board_delete_attach_file(filename):
+    abs_path = os.path.join(app.config["BOARD_ATTACH_FILE_PATH"], filename)
+    if os.path.exists(abs_path):
+        os.remove(abs_path)
+        return True
+    return False
 
 @app.route("/upload_image", methods=["POST"])
 def board_upload_image():
@@ -16,6 +23,11 @@ def board_upload_image():
 @app.route("/image/<filename>")
 def board_image(filename):
     return send_from_directory(app.config["BOARD_IMAGE_PATH"], filename)
+
+
+@app.route("/file/<filename>")
+def board_file(filename):
+    return send_from_directory(app.config["BOARD_ATTACH_FILE_PATH"], filename, as_attachment=True)
 
 
 @app.route("/list")
@@ -114,7 +126,8 @@ def board_view(idx):
                 "contents": data.get("contents"),
                 "date": data.get("date"),
                 "view": data.get("view"),
-                "writer_id": data.get("writer_id", "")
+                "writer_id": data.get("writer_id", ""),
+                "attachfile": data.get("attachfile", "")
             }
 
             # search variables
@@ -137,8 +150,16 @@ def board_write():
         name = request.form.get("name")
         title = request.form.get("title")
         contents = request.form.get("contents")
-
         currTime = round(datetime.utcnow().timestamp() * 1000)
+
+        filename = None
+        if "attachfile" in request.files:
+            file = request.files["attachfile"]
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filename = "{}_{}.{}".format(filename.rsplit('.', 1)[0], currTime, filename.rsplit('.', 1)[1])
+                file.save(os.path.join(app.config['BOARD_ATTACH_FILE_PATH'], filename))
+
         board = mongo.db.board
         post = {
             "name": name,
@@ -148,6 +169,9 @@ def board_write():
             "writer_id": session.get("id"),
             "view": 0
         }
+        if filename is not None:
+            post["attachfile"] = filename
+
         row = board.insert_one(post)
         return redirect(url_for("board_view", idx=row.inserted_id))
 
@@ -166,17 +190,32 @@ def board_edit(idx):
     else:
         if session.get("id") == data.get("writer_id"):
             if request.method == "GET":
-                return render_template("edit.html", data=data, title="Edit a post")
+                return render_template("edit.html", result=data, title="Edit a post")
             else:
                 title = request.form.get("title")
                 contents = request.form.get("contents")
+                deletefile = request.form.get("deletefile","")
+                
+                if deletefile == "on" and data.get("attachfile"):
+                    board_delete_attach_file(data.get("attachfile"))
+                    
+                filename = None
+                currTime = round(datetime.utcnow().timestamp() * 1000)
+                if "attachfile" in request.files:
+                    file = request.files["attachfile"]
+                    if file and allowed_file(file.filename):
+                        filename = secure_filename(file.filename)
+                        filename = "{}_{}.{}".format(filename.rsplit('.', 1)[0], currTime, filename.rsplit('.', 1)[1])
+                        file.save(os.path.join(app.config["BOARD_ATTACH_FILE_PATH"], filename))
 
                 board.update_one({"_id": ObjectId(idx)}, {
                     "$set": {
                         "title": title,
-                        "contents": contents
+                        "contents": contents,
+                        "attachfile": filename
                     }
                 })
+                
                 return redirect(url_for("board_view", idx=idx))
         else:
             flash("No right to edit the post.")

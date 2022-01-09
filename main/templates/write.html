@@ -1,6 +1,12 @@
 {% extends "main.html" %}
 {% block content %}
-<script>
+<script type="application/javascript">
+    $(document).on('change', '#customFile', function (event) {
+        console.log("abcd111");
+        $(this).next('.custom-file-label').html(event.target.files[0].name);
+
+    });
+
     $(document).ready(function() {
         $("#summernote").summernote({
             height:300,
@@ -20,11 +26,15 @@
     function uploadImage(image) {
         var data = new FormData();
         data.append("image", image);
+
+        /* contentType: when file transfer, set to false 
+            processData:when not using query string method on url, set to false
+        */
         $.ajax({
             url: "{{url_for('board_upload_image')}}",
             cache: false,
-            contentType: false, <!-- when file transfer, set to false -->
-            processData: false, <!-- when not using query string method on url, set to false-->
+            contentType: false, 
+            processData: false, 
             data: data,
             type: "post",
             success: function(url) {
@@ -57,22 +67,30 @@
             return false;
         }
 
-        return true;        
+        return true;
     }
 </script>
-<form name="form" method="POST" action="/write" onsubmit="return checkForm()">
+
+<!-- enctype is needed when trasfer file to server -->
+<form name="form" method="POST" action="/write" onsubmit="return checkForm()" enctype="multipart/form-data">
     <div class="form-group">
         <label for="name">Writer</label>
         <input class="form-control" type="text" name="name" id="name" value="{{session['name']}}" readonly>
     </div>
     <div class="form-group">
-        <label for="name">Title</label>
+        <label for="title">Title</label>
         <input class="form-control" type="text" name="title" id="title">
     </div>
     <div class="form-group">
-        <label for="name">Contents</label>
+        <label for="contents">Contents</label>
         <textarea class="form-control" name="contents" id="summernote"></textarea>
     </div>
+
+    <div class="custom-file">
+        <input type="file" class="custom-file-input" id="customFile" name="attachfile">
+        <label class="custom-file-label" for="customFile">Choose file</label>
+    </div>
+      
     <div class="text-center">
         <input class="btn btn-primary" type="submit" value="Post">
         <a class="btn btn-success" href="{{url_for('board_list')}}">Back to List</a>

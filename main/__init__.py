@@ -26,13 +26,18 @@ app.config["SECRET_KEY"] = "abcdefg"
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=2)
 mongo = PyMongo(app)
 
-BOARD_IMAGE_PATH = "d:\kbckbc\images"
+
 ALLOWED_EXTENSIONS = set(["txt", "pdf", "png", "jpg", "jpeg", "gif"])
+BOARD_IMAGE_PATH = "d:\\kbckbc\\images"
+BOARD_ATTACH_FILE_PATH = "d:\\kbckbc\\uploads"
 app.config["BOARD_IMAGE_PATH"] = BOARD_IMAGE_PATH
+app.config["BOARD_ATTACH_FILE_PATH"] = BOARD_ATTACH_FILE_PATH
 app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024 # up to 15 MB
 
 if not os.path.exists(app.config["BOARD_IMAGE_PATH"]):
     os.mkdir(app.config["BOARD_IMAGE_PATH"])
+if not os.path.exists(app.config["BOARD_ATTACH_FILE_PATH"]):
+    os.mkdir(app.config["BOARD_ATTACH_FILE_PATH"])
 
 from main.common import login_required, allowed_file, rand_generator
 from main.filter import format_datetime
