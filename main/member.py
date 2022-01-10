@@ -27,7 +27,7 @@ def member_join():
         post = {
             "name": name,
             "email": email,
-            "password": password2,
+            "password": hash_password(password2),
             "joindate": currTime,
             "logintime": "",
             "logincount": 0,
@@ -35,7 +35,7 @@ def member_join():
 
         members.insert_one(post)
 
-        return ""
+        return redirect(url_for("board_list"))
     else:
         return render_template("join.html", title="Sign up for a member")
 
@@ -44,8 +44,11 @@ def member_join():
 def member_login():
     if request.method == "POST":
         email = request.form.get("email")
-        password = request.form.get("pass")
+        password = request.form.get("password")
         next_url = request.form.get("next_url")
+
+
+        print("aaa", email, password, next_url)
 
         members = mongo.db.members
         data = members.find_one({"email": email})
@@ -58,7 +61,10 @@ def member_login():
                 session is stored in a server side
                 In permanent mode, session timeout can be managed
             '''
-            if data.get("pass") == password:
+            print("bbb", data.get("password"), password)
+            print("ccc", check_password(data.get("password"), password))
+
+            if check_password(data.get("password"), password):
                 session["email"] = email
                 session["name"] = data.get("name")
                 session["id"] = str(data.get("_id"))

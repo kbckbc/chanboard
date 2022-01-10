@@ -27,6 +27,16 @@
         var data = new FormData();
         data.append("image", image);
 
+        <!-- To prevent CSRF attack, set csrf_token in ajaxSetup -->
+        var csrf_token = "{{csrf_token()}}"
+        $.ajaxSetup({
+            beforeSend: function(x, s) {
+                if(!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(s.type)) {
+                    x.setRequestHeader("X-CSRFToken", csrf_token)
+                }
+            }
+        });
+
         /* contentType: when file transfer, set to false 
             processData:when not using query string method on url, set to false
         */
@@ -71,6 +81,7 @@
     }
 </script>
 <form name="form" method="POST" action="/edit/{{result._id}}" onsubmit="return checkForm()" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
     <div class="form-group">
         <label for="name">Writer</label>
         <input class="form-control" type="text" name="name" id="name" value="{{session['name']}}" readonly></input>

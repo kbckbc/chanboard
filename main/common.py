@@ -4,6 +4,17 @@ from main import session, redirect, request, url_for, ALLOWED_EXTENSIONS
 from string import ascii_lowercase, ascii_uppercase, digits
 import random
 
+from werkzeug.security import generate_password_hash, check_password_hash
+
+
+def hash_password(password):
+    return generate_password_hash(password)
+
+
+def check_password(hashed_password, user_password):
+    return check_password_hash(hashed_password, user_password)
+
+
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1] in ALLOWED_EXTENSIONS
 

@@ -42,6 +42,7 @@
     }
 </script>
 <form name="form" action="/join" method="POST" onsubmit="return checkForm()" >
+    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
     <div class="form-group">
         <label>E-mail</label>
         <input class="form-control" type="text" name="email" id="email">

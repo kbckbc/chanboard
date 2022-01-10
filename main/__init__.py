@@ -9,6 +9,7 @@ from flask import abort
 from flask import redirect
 from flask import url_for
 from flask import flash
+from flask_wtf.csrf import CSRFProtect
 import time
 import math
 import os
@@ -17,6 +18,7 @@ from flask import session
 from datetime import timedelta
 
 app = Flask(__name__)
+csrf = CSRFProtect(app)
 
 # can use mongoDB conveniently using flask_pymongo
 # to use flash() function of flask, need to set SECRET_KEY
@@ -39,7 +41,7 @@ if not os.path.exists(app.config["BOARD_IMAGE_PATH"]):
 if not os.path.exists(app.config["BOARD_ATTACH_FILE_PATH"]):
     os.mkdir(app.config["BOARD_ATTACH_FILE_PATH"])
 
-from main.common import login_required, allowed_file, rand_generator
+from main.common import login_required, allowed_file, rand_generator, hash_password, check_password
 from main.filter import format_datetime
 from main import board
 from main import member

@@ -25,6 +25,7 @@
 </script>
 
 <form name="form" action="/login" method="POST" onsubmit="return checkForm()">
+    <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
 {% if next_url %}
     <input type="hidden" name="next_url" value="{{next_url}}">
 {% endif %}
