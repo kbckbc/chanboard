@@ -9,6 +9,48 @@ def board_delete_attach_file(filename):
         return True
     return False
 
+
+@app.route("/comment_list/<root_idx>", methods=["GET"])
+@login_required
+def board_comment_list_ajax(root_idx):
+    comments = mongo.db.comment.find({"root_idx": root_idx}).sort("pubdate",-1)
+    comments_list = []
+
+    for c in comments:
+        comments_list.append({
+            "id": str(c.get("_id")),
+            "root_idx": c.get("root_idx"),
+            "name": c.get("name"),
+            "writer_id": c.get("writer_id"),
+            "comment": c.get("comment"),
+            "pubdate": format_datetime(c.get("pubdate"))
+        })
+    return jsonify(error="success", comment_lists=comments_list)
+
+@app.route("/comment_write", methods=["POST"])
+@login_required
+def board_comment_write():
+    if request.method == "POST":
+        name = session.get("name")
+        writer_id = session.get("id")
+        root_idx = request.form.get("root_idx")
+        comment = request.form.get("comment")
+        current_utc_time = round(datetime.utcnow().timestamp()*1000)
+
+        db = mongo.db.comment
+
+        post = {
+            "root_idx": str(root_idx),
+            "writer_id": writer_id,
+            "name": name,
+            "comment": comment,
+            "pubdate": current_utc_time
+        }
+        db.insert_one(post)
+        return redirect(url_for("board_view", idx=root_idx))
+        
+
+
 @app.route("/upload_image", methods=["POST"])
 def board_upload_image():
     if request.method == "POST":

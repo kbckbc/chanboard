@@ -6,6 +6,55 @@
     One bracket with % : if statement etc..
 -->
 
+<script>
+    $(document).ready(function() {
+        get_comment_list();
+    });
+
+    function addComment() {
+        $.ajax({
+            url: "{{url_for('board_comment_write')}}",
+            type: "POST",
+            data: $("#commentForm").serialize(),
+            success: function(data) {
+                $("#comment").val("");
+                get_comment_list();
+            },
+            error: function(request, status, error) {
+                var msg = "Error : " + request.status + "<br>";
+                msg += "Error contents : " + request.responseText + "<br>" + error;
+                console.log(msg);
+            }
+        })
+    }
+    function get_comment_list() {
+        $.ajax({
+            url: "{{url_for('board_comment_list_ajax', root_idx=result._id)}}",
+            type: "GET",
+            cache: false,
+            dataType: "json",
+            success: function(data) {
+                c = data.comment_lists;
+                html = "";
+                for(var i=0; i<c.length; i++) {
+                    html += "<div>";
+                    html += "<span>" + c[i].pubdate + "</span>, ";
+                    html += "<span>" + c[i].name + "</span>, ";
+                    html += "<span>" + c[i].comment + "</span> ";
+                    html += "</div>";
+                }
+                $("#cCnt").html(c.length);
+                $("#commentList").html(html);
+            },
+            error: function(request, status, error) {
+                var msg = "Error : " + request.status + "<br>";
+                msg += "Error contents : " + request.responseText + "<br>" + error;
+                console.log(msg);
+            }
+        })
+    }
+</script>
+
 <!-- 
     result variable is from run.py's board_view() function 
 -->
@@ -33,9 +82,21 @@
 
 </table>
 
+<a class="btn btn-success" href="{{url_for('board_list', pagePos=pagePos, searchType=searchType, searchKeyword=searchKeyword)}}">Back to list</a>
 {% if session["id"] == result.writer_id %}
 <a class="btn btn-primary float-right" href="{{url_for('board_edit', idx=result._id)}}">Edit</a>
 <a class="btn btn-danger float-right" href="{{url_for('board_delete', idx=result._id)}}">Delete</a>
 {% endif %}
-<a class="btn btn-success" href="{{url_for('board_list', pagePos=pagePos, searchType=searchType, searchKeyword=searchKeyword)}}">Back to list</a>
+<br>
+<form id="commentForm" action="{{url_for('board_comment_write')}}" method="POST">
+    <input name="csrf_token" value="{{csrf_token()}}">
+    <input name="root_idx" value="{{result._id}}">
+    <textarea rows="3" cols="100" id="comment" name="comment" placeholder="Shoot your comment"></textarea>
+    <a href="#" onclick="addComment()">Shoot a comment!</a>
+</form>
+
+<div>Comments <span id="cCnt">0</span></div>
+<br>
+<div id="commentList"></div>
+
 {% endblock %}
