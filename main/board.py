@@ -2,12 +2,48 @@ from werkzeug.utils import secure_filename
 from main import *
 from flask import send_from_directory
 
+
 def board_delete_attach_file(filename):
     abs_path = os.path.join(app.config["BOARD_ATTACH_FILE_PATH"], filename)
     if os.path.exists(abs_path):
         os.remove(abs_path)
         return True
     return False
+    
+
+@app.route("/comment_edit", methods=["POST"])
+@login_required
+def board_comment_edit():
+    if request.method == "POST":
+        idx = request.form.get("_id")
+        new_comment = request.form.get("new_comment")
+
+        comment = mongo.db.comment
+        data = comment.find_one({"_id": ObjectId(idx)})
+        if data.get("writer_id") == session.get("id"):
+            comment.update_one(
+                {"_id": ObjectId(idx)},
+                {"$set": {"comment": new_comment}},
+            )
+            return jsonify(error="success")
+        else:
+            return jsonify(error="error")
+    return abort(401)
+
+
+@app.route("/comment_delete", methods=["POST"])
+@login_required
+def board_comment_delete():
+    if request.method == "POST":
+        idx = request.form.get("_id")
+        comment = mongo.db.comment
+        data = comment.find_one({"_id": ObjectId(idx)})
+        if data.get("writer_id") == session.get("id"):
+            comment.delete_one({"_id": ObjectId(idx)})
+            return jsonify(error="success")
+        else:
+            return jsonify(error="error")
+    return abort(401)
 
 
 @app.route("/comment_list/<root_idx>", methods=["GET"])
@@ -17,15 +53,19 @@ def board_comment_list_ajax(root_idx):
     comments_list = []
 
     for c in comments:
+        owner = True if c.get("writer_id") == session.get("id") else False
+
         comments_list.append({
-            "id": str(c.get("_id")),
+            "_id": str(c.get("_id")),
             "root_idx": c.get("root_idx"),
             "name": c.get("name"),
             "writer_id": c.get("writer_id"),
             "comment": c.get("comment"),
-            "pubdate": format_datetime(c.get("pubdate"))
+            "pubdate": format_datetime(c.get("pubdate")),
+            "owner": owner,
         })
     return jsonify(error="success", comment_lists=comments_list)
+
 
 @app.route("/comment_write", methods=["POST"])
 @login_required

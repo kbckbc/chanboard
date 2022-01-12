@@ -11,6 +11,83 @@
         get_comment_list();
     });
 
+    function deleteComment(idx) {
+        $.ajax({
+            url:"{{url_for('board_comment_delete')}}",
+            type: "POST",
+            cache: false,
+            data: {
+                "_id": idx,
+                "csrf_token": "{{csrf_token()}}"
+            },
+            success: function(data) {
+                if(data["error"] == "success") {
+                    alert("Delete the comment");
+                    get_comment_list();
+                }
+            },
+            error: function(request, status, error) {
+                var msg = "Error : " + request.status + "<br>";
+                msg += "Error contents : " + request.responseText + "<br>" + error;
+                console.log(msg);
+            }
+
+        })
+    }
+
+    function editCommentSave(idx) {
+        var new_comment = $('#i' + idx).val();
+
+        $.ajax({
+            url: "{{url_for('board_comment_edit')}}",
+            type: "POST",
+            cache: false,
+            data: {
+                "_id": idx,
+                "csrf_token": "{{csrf_token()}}",
+                "new_comment": new_comment
+            },
+            success: function(data) {
+                if(data["error"] == "success") {
+                    get_comment_list();
+                    alert("Comment edited");
+                }
+            },
+            error: function(request, status, error) {
+                var msg = "Error : " + request.status + "<br>";
+                msg += "Error contents : " + request.responseText + "<br>" + error;
+                console.log(msg);
+            }
+        })
+
+    }
+
+
+    function editCommentCancel(idx)  {
+        var html = "";
+        var comment = $('#i' + idx).data("oricomment");
+
+        html += "<span id='comment_area_"+ idx + "'>";
+        html += "<span id='comment_text_" + idx + "'>" + comment + "</span> ";
+            html += "<a href='#' onclick='editComment(\"" + idx + "\")'>Edit </a>";
+            html += "<a href='#' onclick='deleteComment(\"" + idx + "\")'>Delete</a>";
+        html += "</span>"
+
+        $('#comment_area_' + idx).html(html);
+    }
+
+
+    function editComment(idx) {
+        var html="";
+        var comment = $('#comment_text_' + idx).text();
+        html += "<textarea row=3 cols=100 id='i" + idx + "' data-oricomment='" + comment + "'>" + comment;
+        html += "</textarea>"
+        html += "<a href='#' onclick='editCommentSave(\"" + idx + "\")'>Save | </a>";
+        html += "<a href='#' onclick='editCommentCancel(\"" + idx + "\")'>Cancel</a>";
+        $("#comment_area_" + idx).html(html);
+
+    }
+
     function addComment() {
         $.ajax({
             url: "{{url_for('board_comment_write')}}",
@@ -40,7 +117,13 @@
                     html += "<div>";
                     html += "<span>" + c[i].pubdate + "</span>, ";
                     html += "<span>" + c[i].name + "</span>, ";
-                    html += "<span>" + c[i].comment + "</span> ";
+                    html += "<span id='comment_area_"+ c[i]._id + "'>";
+                    html += "<span id='comment_text_" + c[i]._id + "'>" + c[i].comment + "</span> ";
+                    if( c[i].owner ){
+                        html += "<a href='#' onclick='editComment(\"" + c[i]._id + "\")'>Edit | </a>";
+                        html += "<a href='#' onclick='deleteComment(\"" + c[i]._id + "\")'>Delete</a>";
+                    }
+                    html += "</span>"
                     html += "</div>";
                 }
                 $("#cCnt").html(c.length);
