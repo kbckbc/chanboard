@@ -48,8 +48,8 @@
     </tbody>
 </table>
 
-<div class="text-center">
-    <ul class="pagination">
+<div class="text-xs-center">
+    <ul class="pagination justify-content-center">
         {% if blockStartPos -1 > 0 %}
             <li class="page-item"><a class="page-link" href="{{url_for('board_list', pagePos=blockStartPos-1, searchType=searchType, searchKeyword=searchKeyword)}}">prev</a></li>
         {% endif %}
@@ -71,21 +71,28 @@
 
 </div>
 
-<div class="text-center">
-    <select name="searchType" id="searchType">
+
+<!-- Another variation with a button -->
+<div class="input-group">
+    <select class="browser-default custom-select" name="searchType" id="searchType">
         <option value="0" {% if searchType == 0 %} selected {% endif %}>All</option>
         <option value="1" {% if searchType == 1 %} selected {% endif %}>Title</option>
         <option value="2" {% if searchType == 2 %} selected {% endif %}>Contents</option>
         <option value="3" {% if searchType == 3 %} selected {% endif %}>Title + Contents</option>
         <option value="4" {% if searchType == 4 %} selected {% endif %}>Writer</option>
     </select>
-    <input type="text" name="searchKeyword" id="searchKeyword" onkeydown="searchEnter(this)" {% if searchKeyword != "" %} value={{searchKeyword}} {% endif %}>
-    <input type="button" value="Search" onclick="searchButton()" class="btn btn-primary">
-    {% else %}
-    <h3> No data </h3>
-    {% endif %}
-    
-    <a href="{{url_for('board_list')}}" class="btn btn-success">Init search</a>
-    <a href="{{url_for('board_write')}}" class="btn btn-primary">Write</a>
+    <input type="text" class="form-control" name="searchKeyword" id="searchKeyword" onkeydown="searchEnter(this)" {% if searchKeyword != "" %} value={{searchKeyword}} {% endif %} placeholder="Type search keyword">
+    <div class="input-group-append">
+        <button class="btn btn-secondary" type="button"  onclick="searchButton()" >
+            <i class="fa fa-search" ></i>
+        </button>
+        <a href="{{url_for('board_list')}}" class="btn btn-success">Init search</a>
+        <a href="{{url_for('board_write')}}" class="btn btn-primary">Write</a>
+    </div>
 </div>
+
+{% else %}
+<h3> No data </h3>
+{% endif %}
+
 {% endblock %}

@@ -115,8 +115,9 @@
                 html = "";
                 for(var i=0; i<c.length; i++) {
                     html += "<div>";
-                    html += "<span>" + c[i].pubdate + "</span>, ";
-                    html += "<span>" + c[i].name + "</span>, ";
+                        html += "<span class='font-weight-bold'>" + c[i].name + "</span> ";
+                        html += "<span>" + c[i].pubdate + "</span>";
+                    html += "<br>"
                     html += "<span id='comment_area_"+ c[i]._id + "'>";
                     html += "<span id='comment_text_" + c[i]._id + "'>" + c[i].comment + "</span> ";
                     if( c[i].owner ){
@@ -125,6 +126,7 @@
                     }
                     html += "</span>"
                     html += "</div>";
+                    html += "<br>";
                 }
                 $("#cCnt").html(c.length);
                 $("#commentList").html(html);
@@ -168,18 +170,29 @@
 <a class="btn btn-success" href="{{url_for('board_list', pagePos=pagePos, searchType=searchType, searchKeyword=searchKeyword)}}">Back to list</a>
 {% if session["id"] == result.writer_id %}
 <a class="btn btn-primary float-right" href="{{url_for('board_edit', idx=result._id)}}">Edit</a>
-<a class="btn btn-danger float-right" href="{{url_for('board_delete', idx=result._id)}}">Delete</a>
+<a class="btn btn-danger float-right" style="margin-right:5px" href="{{url_for('board_delete', idx=result._id)}}">Delete</a>
 {% endif %}
 <br>
+<hr>
+<div>Comments <span id="cCnt">0</span></div>
 <form id="commentForm" action="{{url_for('board_comment_write')}}" method="POST">
-    <input name="csrf_token" value="{{csrf_token()}}">
-    <input name="root_idx" value="{{result._id}}">
-    <textarea rows="3" cols="100" id="comment" name="comment" placeholder="Shoot your comment"></textarea>
-    <a href="#" onclick="addComment()">Shoot a comment!</a>
+    <input hidden="true" name="csrf_token" value="{{csrf_token()}}">
+    <input hidden="true" name="root_idx" value="{{result._id}}">
+    
+
+    <div class="form-group">
+        <span style="float:left; width:150px; margin-right: 5px;" >
+            <input class="form-control" type="text" placeholder="{{session['name']}}"  readonly>
+        </span>
+        <div style="float:left; width:300px; margin-right:5px">
+            <textarea class="form-control" id="textarea1" rows="1" cols="40" id="comment" name="comment" placeholder="Leave your comment"></textarea>
+        </div>
+        <a class="btn btn-primary" style="float:left" href="#" onclick="addComment()">Leave a comment</a>
+    </div>
 </form>
 
-<div>Comments <span id="cCnt">0</span></div>
 <br>
-<div id="commentList"></div>
+<br>
+<div id="commentList" style="clear:both"></div>
 
 {% endblock %}

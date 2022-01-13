@@ -26,7 +26,7 @@ csrf = CSRFProtect(app)
 # to set the session timeout
 app.config["MONGO_URI"] = "mongodb://localhost:27017/chanboard"
 app.config["SECRET_KEY"] = "abcdefg"
-app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=2)
+app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=5)
 mongo = PyMongo(app)
 
 
