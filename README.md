@@ -29,7 +29,7 @@ Project is created with:
 
 
 ## How to run
-Once you download the source code, run below
+Once download the source code, run below
 ```
 docker build -t chanboard .
 docker network create <network name>
