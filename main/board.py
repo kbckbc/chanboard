@@ -111,7 +111,7 @@ def board_image(filename):
 def board_file(filename):
     return send_from_directory(app.config["BOARD_ATTACH_FILE_PATH"], filename, as_attachment=True)
 
-
+@app.route("/")
 @app.route("/list")
 def board_list():
     board = mongo.db.board

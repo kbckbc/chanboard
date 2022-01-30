@@ -31,8 +31,8 @@ mongo = PyMongo(app)
 
 
 ALLOWED_EXTENSIONS = set(["txt", "pdf", "png", "jpg", "jpeg", "gif"])
-BOARD_IMAGE_PATH = "d:\\kbckbc\\images"
-BOARD_ATTACH_FILE_PATH = "d:\\kbckbc\\uploads"
+BOARD_IMAGE_PATH = "d:\\images"
+BOARD_ATTACH_FILE_PATH = "d:\\uploads"
 app.config["BOARD_IMAGE_PATH"] = BOARD_IMAGE_PATH
 app.config["BOARD_ATTACH_FILE_PATH"] = BOARD_ATTACH_FILE_PATH
 app.config["MAX_CONTENT_LENGTH"] = 15 * 1024 * 1024 # up to 15 MB

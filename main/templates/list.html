@@ -19,9 +19,12 @@
     }
 </script>
 
-{{ session["name"] }}
-{{ session["email"] }}
-{{ session["id"] }}
+<!-- 
+    {{ session["name"] }}
+    {{ session["email"] }}
+    {{ session["id"] }}
+
+-->
 
 {% if dataCount > 0 %}
 <table class="table">
@@ -72,6 +75,12 @@
 </div>
 
 
+{% else %}
+<div class="text-xs-center" style="padding-top:10%;padding-bottom:10%">
+    <h3><p class="text-center">No serach result!</p></h3>
+</div>
+{% endif %}
+
 <!-- Another variation with a button -->
 <div class="input-group">
     <select class="browser-default custom-select" name="searchType" id="searchType">
@@ -90,9 +99,5 @@
         <a href="{{url_for('board_write')}}" class="btn btn-primary">Write</a>
     </div>
 </div>
-
-{% else %}
-<h3> No data </h3>
-{% endif %}
 
 {% endblock %}

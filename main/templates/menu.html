@@ -1,6 +1,23 @@
-{% if session.get("id") is not none %}
-    <a href="{{url_for('member_logout')}}">Log out</a>
-{% else %}
-    <a href="{{url_for('member_login')}}">Log in</a>
-    <a href="{{url_for('member_join')}}">Sign up</a>
+{% if session.get("id") is not none %} 
+
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">{% if session.get("id") is not none %} Welcome {{ session["name"] }} ! {% else %} Not a user? Sign up! {% endif %}</a>
+            </li>
+            
+          </ul>
+          {% if session.get("id") is not none %} 
+            <a href="{{url_for('member_logout')}}" ><button class="btn btn-outline-success my-2 my-sm-0" type="button">Log out</button></a>
+          {% else %} 
+            <a href="{{url_for('member_login')}}" ><button class="btn btn-outline-success my-2 my-sm-0" type="button">Log in</button></a>
+            <a href="{{url_for('member_join')}}" ><button class="btn btn-outline-success my-2 my-sm-0" type="button">Sign up</button></a>
+          {% endif %}
+        </div>
+      </nav>   
+{% else %} 
 {% endif %}
+      

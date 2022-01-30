@@ -35,7 +35,7 @@ def member_join():
 
         members.insert_one(post)
 
-        return redirect(url_for("board_list"))
+        return redirect(url_for("member_login"))
     else:
         return render_template("join.html", title="Sign up for a member")
 
