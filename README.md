@@ -1,31 +1,38 @@
+
+
 ## Table of contents
+* [Go to chanboard](#go-to-chanboard)
 * [General info](#general-info)
 * [Technologies](#technologies)
-* [Setup](#setup)
+* [How to run](#how-to-run)
+
+
+## Go to chanboard
+[chanboard](http://34.125.24.66)
 
 ## General info
-This source code will catch URL, title, contents 
-from Google search result using BeautifulSoup 
-and insert the results into Mongodb. 
-Simply use it when you want to put test data into DB.
+This is a simple board project implemented with various technique.
+However, all the core functions are implemented.
+Membership registration, login, posting, uploading attachments, and writing comments are all implemented.
+After creating an image with docker, it was launched as an instance on Google Cloud Service.
+It's a simple project, but I hope it helps at least one person.
+
 
 ## Technologies
 Project is created with:
-* python version: 3.9.1
-* Beautiful soap
-* Mongodb
-	
-## Setup
-In order to use this source, install these packages.
-```
-pip install requests
-pip install beautifulsoup4
-pip install pymongo
-pip install lxml
-```
+* Web framework : Flask
+* Database : Mongodb
+* Web server : Nginx
+* Bootstrap
+* Cloud : Google cloud
+* Docker
+
 
 ## How to run
+Once you download the source code, run below
 ```
-Run debug mode : python ggcrawling.py
-Run non-debug mode : python -O ggcrawling.py
+docker build -t chanboard .
+docker network create <network name>
+docker run --name mongo --net <network name> -v /mongodb/db:/data/db -d -p 27017:27017 --restart always mongo
+docker run -d --name chanboard --net <network name> -p 80:80 chanboard
 ```
