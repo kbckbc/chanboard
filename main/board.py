@@ -120,6 +120,9 @@ def board_main():
     
 @app.route("/list")
 def board_list():
+    if session.get("name") == None:
+        return redirect(url_for('member_login'))
+            
     board = mongo.db.board
 
     # search variables
