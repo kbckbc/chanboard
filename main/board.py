@@ -112,6 +112,12 @@ def board_file(filename):
     return send_from_directory(app.config["BOARD_ATTACH_FILE_PATH"], filename, as_attachment=True)
 
 @app.route("/")
+def board_main():
+    if session.get("name") == None:
+        return redirect(url_for('member_login'))
+    else:
+        return redirect(url_for('board_list'))
+    
 @app.route("/list")
 def board_list():
     board = mongo.db.board
