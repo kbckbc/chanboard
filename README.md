@@ -23,9 +23,9 @@ Project is created with:
 * Web framework : Flask
 * Database : Mongodb
 * Web server : Nginx
-* Bootstrap
-* Cloud : Google cloud
-* Docker
+* UI : Bootstrap
+* Server : Google cloud
+* Etc : Docker
 
 
 ## How to run
